@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Path, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Path
 from sqlalchemy.orm import Session
 from typing import Annotated, TypeAlias
 import models
 from database import SessionLocal
 from pydantic import BaseModel, Field
 from .auth import get_current_user
-from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
+
 
 
 
@@ -25,60 +24,12 @@ def get_db():
     finally:
         db.close()
         
-def redirect_to_login():
-    redirect_response = RedirectResponse(url="/auth/login-page", status_code=status.HTTP_302_FOUND)
-    redirect_response.delete_cookie(key="access_token")
-    return redirect_response
+
         
 db_dependency: TypeAlias = Annotated[Session, Depends(get_db)]
 user_dependency: TypeAlias = Annotated[dict, Depends(get_current_user)]
-templates = Jinja2Templates(directory="templates")
 
 
-@router.get("/todo-page")
-async def render_todo_page(request: Request, db: db_dependency):
-    try:
-        user = await get_current_user(request.cookies.get('access_token'))
-
-        if user is None:
-            return redirect_to_login()
-
-        todos = db.query(models.Todos).filter(models.Todos.owner_id == user.get("user_id")).all()
-
-        return templates.TemplateResponse(request, "todo.html", {"todos": todos, "user": user})
-
-    except:
-        return redirect_to_login()
-
-
-@router.get('/add-todo-page')
-async def render_todo_page(request: Request):
-    try:
-        user = await get_current_user(request.cookies.get('access_token'))
-
-        if user is None:
-            return redirect_to_login()
-
-        return templates.TemplateResponse(request, "add-todo.html", {"user": user})
-
-    except:
-        return redirect_to_login()
-
-
-@router.get("/edit-todo-page/{todo_id}")
-async def render_edit_todo_page(request: Request, todo_id: int, db: db_dependency):
-    try:
-        user = await get_current_user(request.cookies.get('access_token'))
-
-        if user is None:
-            return redirect_to_login()
-
-        todo = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
-
-        return templates.TemplateResponse(request, "edit-todo.html", {"todo": todo, "user": user})
-
-    except:
-        return redirect_to_login()
 
 
 class TodoItem(BaseModel):
@@ -159,3 +110,5 @@ async def delete_todo(user: user_dependency,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Todo item not found")
     db.query(models.Todos).filter(models.Todos.id == todo_id).filter(models.Todos.owner_id == user.get("user_id")).delete()
     db.commit()
+
+
