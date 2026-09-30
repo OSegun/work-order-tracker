@@ -14,8 +14,8 @@ The code base is a FastAPI application with user registration, login and per-use
 | 2. Problem statement | Complete | [Problem statement](docs/problem/problem-statement.md) |
 | 3. Requirements | Complete | [Requirements](docs/requirements/requirements.md) |
 | 4. System design | Complete | [Architecture](docs/design/architecture.md), [Data model](docs/design/data-model.md), [ADRs](docs/adr/), [DPIA](docs/governance/dpia.md) |
-| 5. Project plan | In progress | |
-| 6. Build | Not started | |
+| 5. Project plan | Complete |  [Project plan](docs/plan/project-plan.md) |
+| 6. Build | In Progress | |
 | 7. Testing and evaluation | Not started | |
 | 8. Deployment | Not started | |
 | 9. Monitoring and operations | Not started | |
@@ -87,6 +87,28 @@ flowchart TD
 Requests enter through Envoy Gateway, which holds the TLS certificate. Each API pod authenticates the caller with a revocable access token, checks role, scope and job state through one policy module, and writes every job change together with its history in one database transaction. Network policies allow only the connections shown. Changes reach the cluster through GitHub Actions and Flux, and secrets are stored encrypted with SOPS.
 
 Sixteen Architecture Decision Records explain each choice and the alternatives considered. The full design, with a text version of every diagram, is in the [architecture overview](docs/design/architecture.md).
+
+Place it directly after the "System design" section, so just before ## Technology, around line 91:
+
+## Project plan
+
+The build is divided into nine releases, each usable on its own and finished only when its definition of done has a recorded result. Each release is delivered as a series of small, reviewed pull requests.
+
+| Release | What it delivers | Done when |
+|---|---|---|
+| R0 Foundations | Platform: CI, local Kubernetes cluster, database, gateway, network policies, encrypted secrets | The API's health check answers through the gateway, and CI passes |
+| R1 Accounts and access | Login, roles, permissions, privacy notice, audit log | Every endpoint is tested as every role |
+| R2 Reference data and the SLA clock | Customers, contracts, working calendar, due-time calculation | The SLA clock's acceptance and property-based tests pass |
+| R3 Work-order core | Logging, assignment, technician updates, history, safe retries | A job moves from logged to completed with a full history |
+| R4 Quality of completion | Parts, corrections with approval, verification, spot checks | Corrections and spot checks work end to end |
+| R5 Planned maintenance | Schedules and scheduled tasks | Planned jobs are created on Lagos time without duplicates |
+| R6 Reports | SLA, completeness and billable-extras reports | Report acceptance criteria pass |
+| R7 Governance automation | Personal-data export, correction and retention | Rights and retention acceptance criteria pass |
+| R8 Hardening and pilot | Performance, recovery and pilot deployment | The performance target is met and a restore is tested |
+
+The table shows each release in build order. Security comes before any feature (R1), and the most rule-heavy component, the SLA clock, is tested on its own (R2) before any job depends on it. Governance requirements are built in the same release as the features they protect, not added at the end.
+
+Progress is tracked against seven milestones, from M0 "Platform running" to M6 "Pilot live and measured", each reached when its releases are done. The full plan, including the governance schedule, prerequisites and delivery risks, is in the [project plan](docs/plan/project-plan.md).
 
 ## Technology
 
