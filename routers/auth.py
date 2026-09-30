@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 import os
-from fastapi import APIRouter, Depends, HTTPException, status, Path, Request
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 import models
 from sqlalchemy.orm import Session
@@ -9,8 +9,7 @@ from database import SessionLocal, engine
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
+
 
 
 
@@ -42,16 +41,8 @@ def get_db():
         
 db_dependency: TypeAlias = Annotated[Session, Depends(get_db)]
 
-templates = Jinja2Templates(directory="templates")
 
 
-@router.get("/login-page")
-def render_login_page(request: Request):
-    return templates.TemplateResponse(request, "login.html")
-
-@router.get("/register-page")
-def render_register_page(request: Request):
-    return templates.TemplateResponse(request, "register.html")
 
 
 def authenticate_user(username: str, password: str, db):
@@ -140,3 +131,6 @@ async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     token = jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
     
     return Token(access_token=token, token_type="bearer")
+
+
+
