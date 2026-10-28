@@ -8,18 +8,18 @@ The code base is a FastAPI application with user registration, login and per-use
 
 ## Delivery lifecycle
 
-| Phase | Status | Documents |
-|---|---|---|
-| 1. Discovery | Complete | [Engagement brief](docs/discovery/engagement-brief.md), [Data inventory](docs/governance/data-inventory.md) |
-| 2. Problem statement | Complete | [Problem statement](docs/problem/problem-statement.md) |
-| 3. Requirements | Complete | [Requirements](docs/requirements/requirements.md) |
-| 4. System design | Complete | [Architecture](docs/design/architecture.md), [Data model](docs/design/data-model.md), [ADRs](docs/adr/), [DPIA](docs/governance/dpia.md) |
-| 5. Project plan | Complete |  [Project plan](docs/plan/project-plan.md) |
-| 6. Build | In Progress | |
-| 7. Testing and evaluation | Not started | |
-| 8. Deployment | Not started | |
-| 9. Monitoring and operations | Not started | |
-| 10. Handover and retrospective | Not started | |
+| Phase                          | Status      | Documents                                                                                                                                |
+| ------------------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Discovery                   | Complete    | [Engagement brief](docs/discovery/engagement-brief.md), [Data inventory](docs/governance/data-inventory.md)                              |
+| 2. Problem statement           | Complete    | [Problem statement](docs/problem/problem-statement.md)                                                                                   |
+| 3. Requirements                | Complete    | [Requirements](docs/requirements/requirements.md)                                                                                        |
+| 4. System design               | Complete    | [Architecture](docs/design/architecture.md), [Data model](docs/design/data-model.md), [ADRs](docs/adr/), [DPIA](docs/governance/dpia.md) |
+| 5. Project plan                | Complete    | [Project plan](docs/plan/project-plan.md)                                                                                                |
+| 6. Build                       | In Progress |                                                                                                                                          |
+| 7. Testing and evaluation      | Not started |                                                                                                                                          |
+| 8. Deployment                  | Not started |                                                                                                                                          |
+| 9. Monitoring and operations   | Not started |                                                                                                                                          |
+| 10. Handover and retrospective | Not started |                                                                                                                                          |
 
 The engagement follows these ten phases in order. Each phase ends with an exit gate: a set of conditions that must be met before the next phase starts. The documents each phase produces are added to this repository once approved.
 
@@ -31,12 +31,12 @@ The client is a facility-maintenance company in Lagos with about 100 staff, incl
 
 Today, requests arrive by phone, email and WhatsApp, jobs are tracked in spreadsheets and on paper job cards, and completion is reported by phone. Discovery recorded four pain points:
 
-| Pain point | Impact (estimate) |
-|---|---|
+| Pain point                                    | Impact (estimate)        |
+| --------------------------------------------- | ------------------------ |
 | Service credits for missed or unprovable SLAs | About ₦8,700,000 a month |
-| Billable extras never billed | About ₦2,600,000 a month |
-| Planned maintenance visits skipped | About 48 a week |
-| Staff time spent chasing and re-typing | About 128 hours a week |
+| Billable extras never billed                  | About ₦2,600,000 a month |
+| Planned maintenance visits skipped            | About 48 a week          |
+| Staff time spent chasing and re-typing        | About 128 hours a week   |
 
 All four share one cause: there is no single, trusted, time-stamped record of each job. The full analysis, including the current process step by step and how each figure is calculated, is in the [engagement brief](docs/discovery/engagement-brief.md).
 
@@ -56,14 +56,14 @@ Every dataset, its owner, retention period and each use of personal data are lis
 
 Breakdowns are recorded as missing their SLA times, costing the client about ₦8,700,000 a month in service credits (estimate). Because requests, progress and completion are recorded by hand and by phone, the client can neither trust its own compliance figure nor prove that a job was on time when a customer disputes it.
 
-| Target | Measure | Goal |
-|---|---|---|
-| T1 | Breakdowns with recorded reported, arrival and completion times | 98% or more within 8 weeks of go-live |
-| T1a | Spot-checked breakdowns whose recorded times are confirmed | 95% or more within 8 weeks of go-live |
-| T2 | Breakdowns finished within their resolution SLA, four-week average | At least 2 percentage points above the trusted baseline, by week 16 |
-| T3 | Service credits paid per month | At least 25% lower, by week 16 |
-| T4 | Parts recorded on jobs, as a share of parts issued from stores | 95% or more within 8 weeks of go-live |
-| T5 | Planned maintenance visits completed within 3 working days of their due date | 97% or more within 12 weeks of go-live |
+| Target | Measure                                                                      | Goal                                                                |
+| ------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| T1     | Breakdowns with recorded reported, arrival and completion times              | 98% or more within 8 weeks of go-live                               |
+| T1a    | Spot-checked breakdowns whose recorded times are confirmed                   | 95% or more within 8 weeks of go-live                               |
+| T2     | Breakdowns finished within their resolution SLA, four-week average           | At least 2 percentage points above the trusted baseline, by week 16 |
+| T3     | Service credits paid per month                                               | At least 25% lower, by week 16                                      |
+| T4     | Parts recorded on jobs, as a share of parts issued from stores               | 95% or more within 8 weeks of go-live                               |
+| T5     | Planned maintenance visits completed within 3 working days of their due date | 97% or more within 12 weeks of go-live                              |
 
 T1 and T1a come first because every other measure depends on complete and truthful records. The headline, T2, is set against a baseline measured in the first four weeks of use, because today's 80% figure comes from a manual report whose errors push it in both directions.
 
@@ -94,17 +94,17 @@ Place it directly after the "System design" section, so just before ## Technolog
 
 The build is divided into nine releases, each usable on its own and finished only when its definition of done has a recorded result. Each release is delivered as a series of small, reviewed pull requests.
 
-| Release | What it delivers | Done when |
-|---|---|---|
-| R0 Foundations | Platform: CI, local Kubernetes cluster, database, gateway, network policies, encrypted secrets | The API's health check answers through the gateway, and CI passes |
-| R1 Accounts and access | Login, roles, permissions, privacy notice, audit log | Every endpoint is tested as every role |
-| R2 Reference data and the SLA clock | Customers, contracts, working calendar, due-time calculation | The SLA clock's acceptance and property-based tests pass |
-| R3 Work-order core | Logging, assignment, technician updates, history, safe retries | A job moves from logged to completed with a full history |
-| R4 Quality of completion | Parts, corrections with approval, verification, spot checks | Corrections and spot checks work end to end |
-| R5 Planned maintenance | Schedules and scheduled tasks | Planned jobs are created on Lagos time without duplicates |
-| R6 Reports | SLA, completeness and billable-extras reports | Report acceptance criteria pass |
-| R7 Governance automation | Personal-data export, correction and retention | Rights and retention acceptance criteria pass |
-| R8 Hardening and pilot | Performance, recovery and pilot deployment | The performance target is met and a restore is tested |
+| Release                             | What it delivers                                                                               | Done when                                                         |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| R0 Foundations                      | Platform: CI, local Kubernetes cluster, database, gateway, network policies, encrypted secrets | The API's health check answers through the gateway, and CI passes |
+| R1 Accounts and access              | Login, roles, permissions, privacy notice, audit log                                           | Every endpoint is tested as every role                            |
+| R2 Reference data and the SLA clock | Customers, contracts, working calendar, due-time calculation                                   | The SLA clock's acceptance and property-based tests pass          |
+| R3 Work-order core                  | Logging, assignment, technician updates, history, safe retries                                 | A job moves from logged to completed with a full history          |
+| R4 Quality of completion            | Parts, corrections with approval, verification, spot checks                                    | Corrections and spot checks work end to end                       |
+| R5 Planned maintenance              | Schedules and scheduled tasks                                                                  | Planned jobs are created on Lagos time without duplicates         |
+| R6 Reports                          | SLA, completeness and billable-extras reports                                                  | Report acceptance criteria pass                                   |
+| R7 Governance automation            | Personal-data export, correction and retention                                                 | Rights and retention acceptance criteria pass                     |
+| R8 Hardening and pilot              | Performance, recovery and pilot deployment                                                     | The performance target is met and a restore is tested             |
 
 The table shows each release in build order. Security comes before any feature (R1), and the most rule-heavy component, the SLA clock, is tested on its own (R2) before any job depends on it. Governance requirements are built in the same release as the features they protect, not added at the end.
 
@@ -112,16 +112,16 @@ Progress is tracked against seven milestones, from M0 "Platform running" to M6 "
 
 ## Technology
 
-| Part | Current code base | Target design |
-|---|---|---|
-| Language | Python 3.11 | Python 3.11 |
-| Web framework | FastAPI | FastAPI, JSON API only |
-| Database access | SQLAlchemy, an object-relational mapper (ORM) | SQLAlchemy |
-| Database | SQLite, a single-file database | PostgreSQL ([ADR 0002](docs/adr/0002-postgresql-database.md)) |
-| Database migrations | Alembic | Alembic, run once per release ([ADR 0011](docs/adr/0011-scheduled-tasks-and-migrations.md)) |
-| Login | JSON Web Tokens (JWT), passwords hashed with bcrypt | Stored access tokens, passwords hashed with Argon2id ([ADR 0004](docs/adr/0004-authentication-with-stored-access-tokens.md)) |
-| Pages | Jinja2 templates with Bootstrap 4.3.1 | None; a separate client application uses the API |
-| Tests | pytest | pytest, with property-based tests for the SLA clock |
+| Part                | Current code base                                   | Target design                                                                                                                |
+| ------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Language            | Python 3.11                                         | Python 3.11                                                                                                                  |
+| Web framework       | FastAPI                                             | FastAPI, JSON API only                                                                                                       |
+| Database access     | SQLAlchemy, an object-relational mapper (ORM)       | SQLAlchemy                                                                                                                   |
+| Database            | SQLite, a single-file database                      | PostgreSQL ([ADR 0002](docs/adr/0002-postgresql-database.md))                                                                |
+| Database migrations | Alembic                                             | Alembic, run once per release ([ADR 0011](docs/adr/0011-scheduled-tasks-and-migrations.md))                                  |
+| Login               | JSON Web Tokens (JWT), passwords hashed with bcrypt | Stored access tokens, passwords hashed with Argon2id ([ADR 0004](docs/adr/0004-authentication-with-stored-access-tokens.md)) |
+| Pages               | Jinja2 templates with Bootstrap 4.3.1               | None; a separate client application uses the API                                                                             |
+| Tests               | pytest                                              | pytest, with property-based tests for the SLA clock                                                                          |
 
 The table shows the tools in the current code base and the tools the design replaces them with. Each change is explained in the linked Architecture Decision Record.
 
@@ -151,7 +151,7 @@ Requirements: git, uv (a Python package and environment manager) and a Linux or 
    ```
 5. Start the application.
    ```bash
-   .venv/bin/uvicorn main:app --reload
+   .venv/bin/python -m uvicorn app.main:app --reload
    ```
 6. Open http://127.0.0.1:8000. On first start, the application creates the SQLite database file `todoApplication.db` in the project folder.
 
