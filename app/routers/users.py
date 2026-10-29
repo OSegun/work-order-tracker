@@ -50,6 +50,8 @@ async def change_password(
         )
 
     user_model = db.query(models.Users).filter(models.Users.id == user.get("user_id")).first()
+    if user_model is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     if not bcrypt_context.verify(user_password.old_password, user_model.hashed_password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password is incorrect")
     user_model.hashed_password = bcrypt_context.hash(user_password.new_password)

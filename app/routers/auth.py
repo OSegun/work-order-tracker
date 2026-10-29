@@ -1,5 +1,5 @@
 from datetime import UTC, datetime, timedelta
-from typing import Annotated, TypeAlias
+from typing import Annotated, Any, TypeAlias
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -124,9 +124,13 @@ async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password"
         )
 
-    encode = {"sub": user.username, "user_id": user.id, "role": user.role}
     expire = datetime.now(UTC) + timedelta(minutes=20)
-    encode.update({"exp": expire})
+    encode: dict[str, Any] = {
+        "sub": user.username,
+        "user_id": user.id,
+        "role": user.role,
+        "exp": expire,
+    }
     token = jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
     return Token(access_token=token, token_type="bearer")
