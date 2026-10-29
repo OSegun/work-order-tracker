@@ -46,9 +46,7 @@ def reset_tables() -> None:
     Empty both tables and restart their identity counters at 1
     """
     with engine.begin() as conn:
-        conn.execute(
-            text("""TRUNCATE TABLE todos, users RESTART IDENTITY CASCADE;""")
-        )
+        conn.execute(text("""TRUNCATE TABLE todos, users RESTART IDENTITY CASCADE;"""))
 
 
 client = TestClient(app)
