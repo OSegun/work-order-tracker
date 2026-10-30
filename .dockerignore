@@ -1,0 +1,23 @@
+# Python virtual environment
+.venv/
+
+# Python compiled files and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local databases (contain personal data and change on every run)
+*.db
+*.sqlite3
+
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+
+# Windows download markers created when files are copied into WSL
+*:Zone.Identifier
+
+# Editor settings
+.vscode/
+.idea/
